@@ -1,0 +1,29 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<table border="1" width="60%">
+ <tr align="center"><td  colspan="3"><h2>Journal Entries<h2></h2></td></tr>
+ <tr  style="font-weight:bold">
+ <td>Journal Title</td>
+ <td>Entry time</td>
+     <td>Owner</td>
+
+ </tr>
+{% for entry in entries %}
+    <tr>
+        <td>
+            <a href="{{ url_for('entries',entry_id=entry.id) }}">{{ entry.title }}</a>
+        </td>
+        <td>
+          <time datetime="{{ entry.entrydate }}">{{ entry.entrydate.strftime('%A, %B %d %Y') }}</time>
+       </td>
+        <td>
+           {{ entry.user.email  }}
+       </td>
+    </tr>
+{% endfor %}
+</table>
+<br>
+{% endblock %}
+
