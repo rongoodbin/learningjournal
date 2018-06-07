@@ -68,21 +68,54 @@ def entries(entry_id=None):
         return render_template('detail.html', entry=entry)
 
 
+
+@app.route('/entries/delete/<int:entry_id>', methods=('GET', 'POST'))
+def delete(entry_id):
+    if not entry_id:
+          return redirect(url_for('entries'))
+    try:
+        entry = models.Journal.get(models.Journal.id == entry_id)
+    except:
+        flash("Entry not found in the database!", "error")
+
+    try:
+        if entry.user.id != g.user.id:
+            flash("Deletion is  not allowed if you are not the owner!", "error")
+            return redirect(url_for('index'))
+    except:
+        flash("Deletion is  not allowed if you are not the owner!", "error")
+        return redirect(url_for('index'))
+    entry.delete_instance()
+    return redirect(url_for('index'))
+
+
 @app.route('/entries/edit/<int:entry_id>', methods=('GET', 'POST'))
 def edit(entry_id):
     if not entry_id:
           return redirect(url_for('entries'))
-
     form = forms.EntryForm()
     entry = models.Journal.get(models.Journal.id == entry_id)
+
+    try:
+        if entry.user.id != g.user.id:
+            flash("Modification not allowed if you are not the owner!", "error")
+            return redirect(url_for('index'))
+    except:
+        flash("Modification not allowed if you are not the owner!", "error")
+        return redirect(url_for('index'))
+
+    # Add this line, this is what it gets pulled out of the database as:
+    print("resources:"+entry.resources)
+    # And then its data type
+    print(type(entry.resources))
 
     if form.validate_on_submit():
         entry.title = form.title.data
         entry.entrydate = form.date.data
         entry.timespent = form.timespent.data
         entry.learned = form.learned.data
-        entry.resources = form.resources.raw_data
-        entry.save
+        entry.resources = form.resources.data
+        entry.save()
         return render_template('detail.html', entry=entry)
     else:
         form.title.data = entry.title
@@ -109,7 +142,7 @@ def newentry():
                 user=g.user.id,
                 timespent=form.timespent.data,
                 learned=form.learned.data,
-                resources=form.resources.raw_data
+                resources=form.resources.data.replace('\r', '')
             )
             return redirect(url_for('index'))
     return render_template('new.html',form=form)
