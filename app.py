@@ -1,10 +1,9 @@
-from flask import (Flask, g, render_template, flash, redirect, url_for, abort)
+from flask import (Flask, g, render_template, flash, redirect, url_for )
 from flask_login import LoginManager, login_user, logout_user, \
-                        login_required, current_user
+    login_required, current_user
 import models
 import forms
 from flask_bcrypt import check_password_hash
-
 
 DEBUG = True
 PORT = 8000
@@ -16,6 +15,7 @@ app.secret_key = "spfr=iogr-=ikagpkjope2="
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 @login_manager.user_loader
 def load_user(userid):
@@ -40,7 +40,6 @@ def after_request(response):
     return response
 
 
-
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     form = forms.RegisterForm()
@@ -54,24 +53,23 @@ def register():
     return render_template('register.html', form=form)
 
 
-#/’ /entries /entries/<slug> /entries/edit/<slug> /entries/delete/<slug> /entry
+# /’ /entries /entries/<slug> /entries/edit/<slug> /entries/delete/<slug> /entry
 
 @app.route('/entries/<int:entry_id>', methods=('GET', 'POST'))
 @app.route('/entries')
 def entries(entry_id=None):
     if not entry_id:
-           entries = models.Journal.select().limit(100)
-           return render_template('index.html', entries=entries)
+        entries = models.Journal.select().limit(100)
+        return render_template('index.html', entries=entries)
     else:
         entry = models.Journal.get(models.Journal.id == entry_id)
         return render_template('detail.html', entry=entry)
 
 
-
 @app.route('/entries/delete/<int:entry_id>', methods=('GET', 'POST'))
 def delete(entry_id):
     if not entry_id:
-          return redirect(url_for('entries'))
+        return redirect(url_for('entries'))
     try:
         entry = models.Journal.get(models.Journal.id == entry_id)
     except:
@@ -79,7 +77,8 @@ def delete(entry_id):
 
     try:
         if entry.user.id != g.user.id:
-            flash("Deletion is  not allowed if you are not the owner!", "error")
+            flash("Deletion is  not allowed if you are not the owner!",
+                  "error")
             return redirect(url_for('index'))
     except:
         flash("Deletion is  not allowed if you are not the owner!", "error")
@@ -91,20 +90,21 @@ def delete(entry_id):
 @app.route('/entries/edit/<int:entry_id>', methods=('GET', 'POST'))
 def edit(entry_id):
     if not entry_id:
-          return redirect(url_for('entries'))
+        return redirect(url_for('entries'))
     form = forms.EntryForm()
     entry = models.Journal.get(models.Journal.id == entry_id)
 
     try:
         if entry.user.id != g.user.id:
-            flash("Modification not allowed if you are not the owner!", "error")
+            flash("Modification not allowed if you are not the owner!",
+                  "error")
             return redirect(url_for('index'))
     except:
         flash("Modification not allowed if you are not the owner!", "error")
         return redirect(url_for('index'))
 
     # Add this line, this is what it gets pulled out of the database as:
-    print("resources:"+entry.resources)
+    print("resources:" + entry.resources)
     # And then its data type
     print(type(entry.resources))
 
@@ -130,21 +130,21 @@ def index():
     return redirect(url_for('entries'))
 
 
-@app.route('/newentry',  methods=('GET', 'POST') )
+@app.route('/newentry', methods=('GET', 'POST'))
 @login_required
 def newentry():
     form = forms.EntryForm()
     if form.validate_on_submit():
-            models.Journal.create_entry(
-                title=form.title.data,
-                entrydate=form.date.data,
-                user=g.user.id,
-                timespent=form.timespent.data,
-                learned=form.learned.data,
-                resources=form.resources.data.replace('\r', '')
-            )
-            return redirect(url_for('index'))
-    return render_template('new.html',form=form)
+        models.Journal.create_entry(
+            title=form.title.data,
+            entrydate=form.date.data,
+            user=g.user.id,
+            timespent=form.timespent.data,
+            learned=form.learned.data,
+            resources=form.resources.data.replace('\r', '')
+        )
+        return redirect(url_for('index'))
+    return render_template('new.html', form=form)
 
 
 @app.route('/login', methods=('GET', 'POST'))
