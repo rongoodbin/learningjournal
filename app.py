@@ -58,11 +58,15 @@ def register():
 @app.route('/entries/<int:entry_id>', methods=('GET', 'POST'))
 @app.route('/entries')
 def entries(entry_id=None):
+    entry = None
     if not entry_id:
         entries = models.Journal.select().limit(100)
         return render_template('index.html', entries=entries)
     else:
-        entry = models.Journal.get(models.Journal.id == entry_id)
+        try:
+           entry = models.Journal.get(models.Journal.id == entry_id)
+        except models.DoesNotExist:
+            return render_template('404.html'), 404
         return render_template('detail.html', entry=entry)
 
 
