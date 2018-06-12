@@ -22,7 +22,7 @@
                             <h3>Resources to Remember:</h3>
                             <ul>
                                  {% for resource in entry.resources.split("\n") %}
-                                    <li><a href="">{{ resource }}</a></li>
+                                    <li>{{ resource }}</li>
                                 {% endfor %}
 
                             </ul>
@@ -32,10 +32,8 @@
             </div>
             {% if current_user.email == entry.user.email %}
                <div class="edit">
-                  <a href="{{ url_for('edit',entry_id=entry.id) }}">Edit Entry</a>
-               </div>
-            <div>
-              <a href="{{ url_for('delete',entry_id=entry.id) }}">Delete Entry</a>
+                  <a href="{{ url_for('edit',entry_id=entry.id) }}">Edit</a>
+                  <a href="{{ url_for('delete',entry_id=entry.id) }}">Delete</a>
             </div>
             {% endif %}
          <! {{ current_user.email }}

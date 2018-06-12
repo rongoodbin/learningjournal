@@ -64,7 +64,6 @@ def entries(entry_id=None):
            return render_template('index.html', entries=entries)
     else:
         entry = models.Journal.get(models.Journal.id == entry_id)
-        print(entry.title)
         return render_template('detail.html', entry=entry)
 
 
@@ -172,6 +171,11 @@ def logout():
     logout_user()
     flash("You've been logged out! Come back soon!", "success")
     return redirect(url_for('index'))
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
 
 
 if __name__ == '__main__':

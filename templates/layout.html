@@ -7,17 +7,15 @@
         <link href="https://fonts.googleapis.com/css?family=Cousine:400" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Work+Sans:600" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/site.css">
+        <link rel="stylesheet" href="/staic/css/normalize.css">
+        <link rel="stylesheet" href="/static/css/site.css">
     </head>
     <body>
         <header>
-            <div class="container">
+            <div class="container" align="center">
                 <div class="site-header">
-                    <a class="logo" href="index.html"><i class="material-icons">library_books</i></a>
+                    <a class="logo" href="{{ url_for('index') }}"><i class="material-icons">library_books</i></a>
                     <a class="button icon-right" href="{{ url_for('newentry') }}"><span>New Entry</span> <i class="material-icons">add</i></a>
-                    <a href="{{ url_for('index') }}"  title="Login">Main Menu</a>
-
                 </div>
                     <div class="site-header">
                 <!-- Say Hi -->
@@ -38,9 +36,9 @@
             {% if messages %}
                 {% for category, message in messages %}
                     {% if category == "error" %}
-                       <div  style="color:red">{{ message }}</div>
+                       <div  align="center" style="color:red">{{ message }}</div>
                     {% else %}
-                      <div   style="color:green" >{{ message }}</div>
+                      <div   align="center"   style="color:green" >{{ message }}</div>
                    {% endif %}
                 {% endfor %}
             {% endif %}
